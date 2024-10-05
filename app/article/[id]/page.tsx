@@ -1,46 +1,125 @@
-import { notFound } from 'next/navigation'
+'use client'
 
-// Mock data for a single article
-const article = {
-  id: 1,
-  title: 'Getting Started with Next.js',
-  content: `
-    Next.js is a popular React framework that enables you to build server-side rendered and statically generated web applications. It provides an excellent developer experience with features like automatic code splitting, optimized performance, and easy deployment.
+import { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Pencil, Trash2, Save } from 'lucide-react'
 
-    To get started with Next.js, you'll need to have Node.js installed on your machine. Once you have Node.js, you can create a new Next.js project using the following command:
+export default function ArticlePage() {
+  const { id } = useParams()
+  const router = useRouter()
+  const [article, setArticle] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedTitle, setEditedTitle] = useState('')
+  const [editedContent, setEditedContent] = useState('')
 
-    \`\`\`
-    npx create-next-app@latest my-next-app
-    \`\`\`
+  useEffect(() => {
+    const articles = JSON.parse(localStorage.getItem('articles') || '[]')
+    const foundArticle = articles.find((a) => a.id.toString() === id)
+    setArticle(foundArticle)
+  }, [id])
 
-    This command will set up a new Next.js project with all the necessary dependencies and a basic file structure. After the installation is complete, you can navigate to your project directory and start the development server:
+  if (!article) {
+    return <div>Loading...</div>
+  }
 
-    \`\`\`
-    cd my-next-app
-    npm run dev
-    \`\`\`
+  const handleEdit = () => {
+    if (isEditing) {
+      // Save changes
+      const articles = JSON.parse(localStorage.getItem('articles') || '[]')
+      const updatedArticles = articles.map((a) =>
+        a.id.toString() === id
+          ? { ...a, title: editedTitle, content: editedContent }
+          : a
+      )
+      localStorage.setItem('articles', JSON.stringify(updatedArticles))
+      setArticle({ ...article, title: editedTitle, content: editedContent })
+    } else {
+      // Enter edit mode
+      setEditedTitle(article.title)
+      setEditedContent(article.content)
+    }
+    setIsEditing(!isEditing)
+  }
 
-    Now you're ready to start building your Next.js application!
-  `,
-  author: 'John Doe',
-  date: '2024-03-01',
-}
-
-export default function ArticlePage({ params }: { params: { id: string } }) {
-  if (parseInt(params.id) !== article.id) {
-    notFound()
+  const handleDelete = () => {
+    if (confirm('Are you sure you want to delete this article?')) {
+      const articles = JSON.parse(localStorage.getItem('articles') || '[]')
+      const updatedArticles = articles.filter((a) => a.id.toString() !== id)
+      localStorage.setItem('articles', JSON.stringify(updatedArticles))
+      router.push('/')
+    }
   }
 
   return (
-    <article className="max-w-3xl mx-auto">
-      <h1 className="text-4xl font-bold mb-4">{article.title}</h1>
-      <div className="text-gray-600 mb-8">
-        By {article.author} on {article.date}
-      </div>
-      <div
-        className="prose lg:prose-xl"
-        dangerouslySetInnerHTML={{ __html: article.content }}
-      />
-    </article>
+    <div className="max-w-3xl mx-auto">
+      <Card>
+        <CardHeader>
+          {isEditing ? (
+            <Input
+              value={editedTitle}
+              onChange={(e) => setEditedTitle(e.target.value)}
+              className="text-2xl font-bold"
+            />
+          ) : (
+            <CardTitle>{article.title}</CardTitle>
+          )}
+        </CardHeader>
+        <CardContent>
+          {isEditing ? (
+            <Textarea
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
+              className="w-full min-h-[200px]"
+            />
+          ) : (
+            <p>{article.content}</p>
+          )}
+        </CardContent>
+        <CardFooter className="text-sm text-gray-500 flex justify-between items-center">
+          <span>
+            By {article.author} on {article.date}
+          </span>
+          <div className="space-x-2">
+            <Button
+              onClick={handleEdit}
+              variant="outline"
+              size="sm"
+              className="bg-blue-50 text-blue-700 hover:bg-blue-100"
+            >
+              {isEditing ? (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save
+                </>
+              ) : (
+                <>
+                  <Pencil className="w-4 h-4 mr-2" />
+                  Edit
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={handleDelete}
+              variant="outline"
+              size="sm"
+              className="bg-red-50 text-red-700 hover:bg-red-100"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Delete
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
+    </div>
   )
 }

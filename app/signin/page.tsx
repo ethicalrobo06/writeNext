@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -15,15 +16,21 @@ import Link from 'next/link'
 export default function SignIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the data to your backend API for authentication
+    //  send the data to your backend API for authentication
     console.log('Signing in with:', { email, password })
-    // Reset form fields
+
+    // Simulate a successful sign-in
+    // In a real application, you would verify the credentials with your backend
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
     setEmail('')
     setPassword('')
-    alert('Sign in successful!')
+    // Redirect to the home page
+    router.push('/')
   }
 
   return (
