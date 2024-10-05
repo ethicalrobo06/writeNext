@@ -13,7 +13,10 @@ export default function Header() {
             <Button variant="outline">Write a story</Button>
           </Link>
           <Link href="/signin">
-            <Button>Sign In</Button>
+            <Button variant="ghost">Sign In</Button>
+          </Link>
+          <Link href="/signup">
+            <Button>Sign Up</Button>
           </Link>
         </div>
       </nav>

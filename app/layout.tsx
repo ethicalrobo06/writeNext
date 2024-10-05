@@ -7,7 +7,7 @@ import Footer from '@/app/components/Footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Medium Clone',
+  title: 'WriteNext',
   description: 'A blogging platform built with Next.js',
 }
 

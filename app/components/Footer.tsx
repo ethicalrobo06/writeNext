@@ -6,9 +6,9 @@ export default function Footer() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-wrap justify-between">
           <div className="w-full md:w-1/3 mb-6 md:mb-0">
-            <h2 className="text-lg font-semibold mb-4">About Medium Clone</h2>
+            <h2 className="text-lg font-semibold mb-4">About WriteNext</h2>
             <p className="text-gray-600">
-              A platform for sharing ideas and stories.
+              A platform for sharing ideas and stories, built with Next.js.
             </p>
           </div>
           <div className="w-full md:w-1/3 mb-6 md:mb-0">
@@ -33,6 +33,14 @@ export default function Footer() {
                   className="text-gray-600 hover:text-gray-900"
                 >
                   Sign In
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/signup"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  Sign Up
                 </Link>
               </li>
             </ul>
